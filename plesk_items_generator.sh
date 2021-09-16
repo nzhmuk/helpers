@@ -3,34 +3,46 @@
 set -o errexit
 set -o pipefail
 
-function collect_ips() {
+IPV4_REGEX="^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$"
+SUBSCRIPTION_IP=0
+
+function get_subscription_ip() {
                 ip_addresses=( $(hostname -I) )
-#                declare -p ip_addresses
-
                 ip_addresses_quantity=${#ip_addresses[@]}
+                index=0
 
-                printf "Number of IP addresses:\n"
-                echo $ip_addresses_quantity
-
-                for each_ip in { 0..$ip_addresses_quantity }
+                printf "List of available IPv4 addresses on the server [IP address - index]:\n"
+                while [ "$index" -lt "$ip_addresses_quantity" ]
                 do
-                        echo $each_ip
+                    if [[ ${ip_addresses[$index]} =~ $IPV4_REGEX ]]; then
+                        echo "${ip_addresses[$index]} - $index "
+                    fi
+                        let "index = $index + 1"
                 done
+
+                printf "Enter index for the selected IP address: \n"
+                read selected_id
+                SUBSCRIPTION_IP="${ip_addresses[$selected_id]}"
 }
 
 function create_subscriptions() {
 
         printf "Enter a quantity of subscriptions to be created: \n"
         read sub_quantity
+		printf "Enter prefix for subscriptions name (latin, no spaces and special characters): \n"
+		read sub_prefix
+		printf "Enter a prefix for sysuser (latin, no spaces and special characters): \n"
+		read sub_sysuser
+		
         for i in {1.."$sub_quantity"}
                 do
-                        plesk bin subscription --create subscription$1.test -owner admin -service-plan "Default Domain" -ip $ip -login clone$1 -passwd "1qazXSW@1qazXSW@"
+                        plesk bin subscription --create $sub_prefix$i.test -owner admin -service-plan "Default Domain" -ip $SUBSCRIPTION_IP -login $sub_sysuser$i -passwd "1qazXSW@1qazXSW@"
                 done
 }
 
 function main() {
-        collect_ips
-#       create_subscriptions
+        get_subscription_ip
+        create_subscriptions
 
 
 }
