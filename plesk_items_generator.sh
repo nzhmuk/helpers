@@ -39,7 +39,7 @@ function create_subscriptions() {
 
         for i in $(seq 1 "$sub_quantity")
         do
-            plesk bin subscription --create $sub_prefix$i.$hostname.qa.plesk.ru -owner admin -service-plan "Default Domain" -ip $SUBSCRIPTION_IP -login $sub_sysuser$i -passwd "1qazXSW@1qazXSW@"
+            plesk bin subscription --create $sub_prefix$i.$hostname.qa.plesk.ru -owner admin -service-plan "Default Domain" -ip $SUBSCRIPTION_IP -login $sub_sysuser$i -passwd "1qazXSW@1qazXSW@***"
         done
 }
 
