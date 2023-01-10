@@ -50,7 +50,7 @@ function create_subscriptions() {
 }
 
 function main() {
-	set_weak_password()
+	set_weak_password
         get_subscription_ip
         create_subscriptions
 }
