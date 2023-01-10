@@ -3,9 +3,6 @@
 set -o errexit
 set -o pipefail
 
-plesk bin server_pref -u -min_password_strength very_weak
-plesk bin admin --set-admin-password -passwd 'setup1Q**'
-
 IPV4_REGEX="^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$"
 SUBSCRIPTION_IP=0
 
@@ -53,6 +50,7 @@ function create_subscriptions() {
 }
 
 function main() {
+	set_weak_password()
         get_subscription_ip
         create_subscriptions
 }
