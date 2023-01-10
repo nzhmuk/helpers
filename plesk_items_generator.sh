@@ -3,8 +3,17 @@
 set -o errexit
 set -o pipefail
 
+plesk bin server_pref -u -min_password_strength very_weak
+plesk bin admin --set-admin-password -passwd 'setup1Q**'
+
 IPV4_REGEX="^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$"
 SUBSCRIPTION_IP=0
+
+function set_weak_password() {
+
+	printf "Set weak password strength"
+	plesk bin server_pref -u -min_password_strength very_weak
+}
 
 function get_subscription_ip() {
 
@@ -39,7 +48,7 @@ function create_subscriptions() {
 
         for i in $(seq 1 "$sub_quantity")
         do
-            plesk bin subscription --create $sub_prefix$i.$hostname.qa.plesk.ru -owner admin -service-plan "Default Domain" -ip $SUBSCRIPTION_IP -login $sub_sysuser$i -passwd "1qazXSW@1qazXSW@***"
+            plesk bin subscription --create $sub_prefix$i.$hostname.qa.plesk.tech -owner admin -service-plan "Default Domain" -ip $SUBSCRIPTION_IP -login $sub_sysuser$i -passwd "setup1Q***"
         done
 }
 
